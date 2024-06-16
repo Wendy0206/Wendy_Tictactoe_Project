@@ -7,13 +7,13 @@ import { useState,useRef, useEffect } from "react";
 export const TicTacToe= ()=> {
     const [boardValue, setBoardValue] = useState(['','','','','','','','','']);
     const [countMove, setCountMove] = useState(0);
-    const [cellStatus, setCellStatus] = useState([2,2,2,2,2,2,2,2,2]);
     const winner = useRef('O');
 
     useEffect(()=>{
-      
-     
-check_winner();
+      if(countMove>4){
+        check_winner();
+
+      }
 
 },[countMove]);
   
