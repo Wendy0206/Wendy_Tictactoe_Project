@@ -1,7 +1,6 @@
 import { element } from "prop-types";
 import React from "react";
-import { useState, useEffect } from "react";
-import Win from '../../img/Win.gif'
+import { useState,useRef, useEffect } from "react";
 
 
 //create your first component
@@ -9,81 +8,55 @@ export const TicTacToe= ()=> {
     const [boardValue, setBoardValue] = useState(['','','','','','','','','']);
     const [countMove, setCountMove] = useState(0);
     const [cellStatus, setCellStatus] = useState([2,2,2,2,2,2,2,2,2]);
-    const [winnerE, setWinnerE] = useState('visible');
-    const [winnerF, setWinnerF] = useState('hidden');
-    const [playerName, setPlayerName] = useState('hidden');
-    const [player, setPlayer] = useState(['','']);
-    const [finalplayer, setFinalPlayer] = useState('');
-    const [roundCount, setRoundCount] = useState('');
-    
+    const winner = useRef('O');
 
     useEffect(()=>{
       
-      let verticalW= boardValue[0]+boardValue[1]+boardValue[2];
-      let verticalW2=  boardValue[3]+boardValue[4]+boardValue[5];
-      let verticalW3=  boardValue[6]+boardValue[7]+boardValue[8];
-      let horizontalW= boardValue[0]+boardValue[3]+boardValue[6];
-      let horizontalW2=  boardValue[1]+boardValue[4]+boardValue[7];
-      let horizontalW3=  boardValue[2]+boardValue[5]+boardValue[8];
-      let diagonal=  boardValue[0]+boardValue[4]+boardValue[8];
-      let diagonal2=  boardValue[2]+boardValue[4]+boardValue[6];
+     
+check_winner();
 
-      if(countMove==1 && player[0]==''){
-        
-          let new1=prompt("Please tell us who is playing right now");
-          setPlayer(player.map((element,ind)=>ind==0? new1: element));
-        }
-      
-
-           if(countMove==2 && player[1]==''){
-              let new2=prompt("Please tell us who is playing right now");
-              setPlayer(player.map((element,ind)=>ind==1? new2: element));
-              setPlayerName('visible');
-              
-               }
-
-       
+},[countMove]);
+  
 
 
+const check_winner=()=>{
+ 
+  const winner_pattern= [boardValue[0]+boardValue[1]+boardValue[2], boardValue[3]+boardValue[4]+boardValue[5],boardValue[6]+boardValue[7]+boardValue[8],  boardValue[0]+boardValue[3]+boardValue[6], 
+   boardValue[1]+boardValue[4]+boardValue[7], boardValue[2]+boardValue[5]+boardValue[8],boardValue[0]+boardValue[4]+boardValue[8],boardValue[2]+boardValue[4]+boardValue[6]];
+   const dialog = document.getElementById('modal_dialog');
+  
+if(winner_pattern.includes('XXX')){
 
-    if(verticalW=='XXX' || verticalW2=='XXX' || verticalW3=='XXX' || horizontalW=='XXX' || horizontalW2=='XXX' || horizontalW3=='XXX' || diagonal=='XXX'|| diagonal2=='XXX'){
-    
-       // alert('You win');
-        setCountMove(0);
-        setFinalPlayer(player[0]);
-        setCellStatus(cellStatus.map((element,ind)=>(ind==ind)? 2 : element));
-        setBoardValue(boardValue.map((element,ind)=> (ind==ind)? '': element));  
-        setWinnerE('hidden');
-        setWinnerF('visible');
-        setPlayerName('hidden');
-      
-}
-else if(verticalW=='OOO' || verticalW2=='OOO' || verticalW3=='OOO' || horizontalW=='OOO' || horizontalW2=='OOO' || horizontalW3=='OOO' || diagonal=='OOO'|| diagonal2=='OOO'){
-    
-  //  alert('Someone wins');
     setCountMove(0);
     setCellStatus(cellStatus.map((element,ind)=>(ind==ind)? 2 : element));
     setBoardValue(boardValue.map((element,ind)=> (ind==ind)? '': element));  
-    setWinnerE('hidden');
-   setWinnerF('visible');
-   setPlayerName('hidden');
-   setFinalPlayer(player[1]);
+    winner.current='X';
+    dialog.showModal();
+  
+}
+else if(winner_pattern.includes('OOO')){
+
+
+setCountMove(0);
+setCellStatus(cellStatus.map((element,ind)=>(ind==ind)? 2 : element));
+setBoardValue(boardValue.map((element,ind)=> (ind==ind)? '': element));  
+dialog.showModal();
 }
 else if(countMove==9){
-  
-    setCellStatus(cellStatus.map((element,ind)=>(ind==ind)? 2 : element));
-    setBoardValue(boardValue.map((element,ind)=> (ind==ind)? '': element)); 
-    setWinnerE('visible');
-    setWinnerF('hidden');
+
+setCellStatus(cellStatus.map((element,ind)=>(ind==ind)? 2 : element));
+setBoardValue(boardValue.map((element,ind)=> (ind==ind)? '': element)); 
+
 }
 
 
 
 
-},[countMove]);
-      
+}
+
           
 function Move_cell (index){
+console.log('this function was called : ')
 
 // verify the status of the cell
     if(cellStatus[index]==1 || cellStatus[index]==0 )
@@ -113,34 +86,21 @@ function Move_cell (index){
   }
 
    
+
+
 function reset_board (){
-  setWinnerE('visible');
-  setWinnerF('hidden');
-  setCellStatus(cellStatus.map((element,ind)=>(ind==ind)? 2 : element));
-  setBoardValue(boardValue.map((element,ind)=> (ind==ind)? '': element)); 
-  setPlayerName('visible');
-  setRoundCount("again ");
-
-}
-
-function reset_player (){
-setWinnerE('visible');
-setWinnerF('hidden');
-setPlayerName('hidden');
 setCellStatus(cellStatus.map((element,ind)=>(ind==ind)? 2 : element));
 setBoardValue(boardValue.map((element,ind)=> (ind==ind)? '': element)); 
-setPlayer(player.map((element,ind)=> (ind==ind)? '': element));  
-setRoundCount("");
+
 }
   
    
 
 	return	(
-        <div class="container">
-       <h3 style={{visibility: playerName}}>{player[0]} and {player[1]} are playing {roundCount}.</h3>
-       <div className="theBoard" style={{visibility: winnerE}} >
-     
-        <div className="c1 white" ><span onClick={()=>Move_cell(0)}>{boardValue[0]}</span></div>
+        <div class="container_div">
+          <h1 className="mt-3">Tic Tac Toe</h1>
+          <div className="theBoard">
+        <div className="c1 white"><span onClick={()=>Move_cell(0)}>{boardValue[0]}</span></div>
         <div className="c12 black" ><span onClick={()=>Move_cell(1)}>{boardValue[1]}</span></div>
         <div className="c13 white"><span onClick={()=>Move_cell(2)}>{boardValue[2]}</span></div>
         <div className="c21 black"><span onClick={()=>Move_cell(3)}>{boardValue[3]}</span></div>
@@ -149,24 +109,35 @@ setRoundCount("");
         <div className="c31 white"><span onClick={()=>Move_cell(6)}>{boardValue[6]}</span></div>
         <div className="c32 black"><span onClick={()=>Move_cell(7)}>{boardValue[7]}</span></div>
         <div className="c33 white"><span onClick={()=>Move_cell(8)}>{boardValue[8]}</span></div>
-
        </div>
 
-       <div className="img_div" style={{visibility: winnerF}} >
-       <h1>{finalplayer} has won .</h1>
-		<img src={Win} alt="test image"/>
-		</div>
-
-        <div className="button_div" >
-		<button type="button " class="btn btn-info bg-success" onClick={()=>reset_board()}>Lets play again</button>
-    <button type="button " class="btn btn-info bg-secondary" onClick={()=>reset_player()}>Play With someone else</button>
-		</div>
+	  <button type="button " class="button-17" onClick={()=>reset_board()}>Start Over</button>
   
+
+
+    <dialog id="modal_dialog" className="rounded dialog_margin">
+
+<div class="modal-content">
+  <div class="modal-body">
+    <p>Congratulations!!!  <i className={winner.current=='O' ? "fa-solid fa-mosquito" : "fa-solid fa-mosquito"}></i> wins !!! </p>
+  </div>
+  <div class="modal-footer d-flex justify-content-center">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal" style={{ fontFamily: "arial" }} onClick={() => {
+     reset_board();
+      const dialog = document.getElementById('modal_dialog');
+
+      dialog.close();
+    }}>Close</button>
+  </div>
+
+</div>
+
+</dialog>
+
+
 </div>
     );
 	
 };
 
-
-// export default TimeCount;
 
