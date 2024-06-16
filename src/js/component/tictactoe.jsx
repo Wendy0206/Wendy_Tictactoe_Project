@@ -28,7 +28,6 @@ const check_winner=()=>{
 if(winner_pattern.includes('XXX')){
 
     setCountMove(0);
-    setCellStatus(cellStatus.map((element,ind)=>(ind==ind)? 2 : element));
     setBoardValue(boardValue.map((element,ind)=> (ind==ind)? '': element));  
     winner.current='X';
     dialog.showModal();
@@ -38,13 +37,10 @@ else if(winner_pattern.includes('OOO')){
 
 
 setCountMove(0);
-setCellStatus(cellStatus.map((element,ind)=>(ind==ind)? 2 : element));
 setBoardValue(boardValue.map((element,ind)=> (ind==ind)? '': element));  
 dialog.showModal();
 }
 else if(countMove==9){
-
-setCellStatus(cellStatus.map((element,ind)=>(ind==ind)? 2 : element));
 setBoardValue(boardValue.map((element,ind)=> (ind==ind)? '': element)); 
 
 }
@@ -56,28 +52,20 @@ setBoardValue(boardValue.map((element,ind)=> (ind==ind)? '': element));
 
           
 function Move_cell (index){
-console.log('this function was called : ')
 
 // verify the status of the cell
-    if(cellStatus[index]==1 || cellStatus[index]==0 )
+    if(boardValue[index])
     {
-      alert('You cant play here again');
-      
-        
+      alert('You cant play here again');    
     }
 
     else{
         
         if(countMove%2!=0){
-       
-      setCellStatus(cellStatus.map((element,ind)=>(ind==index)? 0 : element));
       setBoardValue(boardValue.map((element,ind)=>ind==index? 'O': element));
-    
         }
 
         if(countMove%2==0){
-          
-            setCellStatus(cellStatus.map((element,ind)=>(ind==index)? 1 : element));
             setBoardValue(boardValue.map((element,ind)=> (ind==index)? 'X': element));   
         }
         setCountMove(countMove+1);
@@ -89,9 +77,8 @@ console.log('this function was called : ')
 
 
 function reset_board (){
-setCellStatus(cellStatus.map((element,ind)=>(ind==ind)? 2 : element));
 setBoardValue(boardValue.map((element,ind)=> (ind==ind)? '': element)); 
-
+winner.current=='O';
 }
   
    
@@ -125,7 +112,7 @@ setBoardValue(boardValue.map((element,ind)=> (ind==ind)? '': element));
     <button type="button" class="btn btn-secondary" data-dismiss="modal" style={{ fontFamily: "arial" }} onClick={() => {
      reset_board();
       const dialog = document.getElementById('modal_dialog');
-
+     winner.current='O';
       dialog.close();
     }}>Close</button>
   </div>
